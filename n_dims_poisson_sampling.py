@@ -1,24 +1,22 @@
+# Ted Moore
+# ted@tedmooremusic.com
+# www.tedmooremusic.com
+# inspiration: https://www.youtube.com/watch?v=flQgnCUxHlw&list=LLF6FNfqNM4Tm7Z3Fu1wIUdg&index=2540
+
 import math
 import numpy as np
 import time
 import argparse
 import csv
-#import matplotlib.pyplot as plt
 
 def generateSamples(n_dims,r,k=30,verbose=False):
     cell_side = r / math.sqrt(2)
-    #print('cell side',cell_side)
     n_cells_per_dim = int(math.ceil(1.0 / cell_side))
-    #total_cells = n_cells_per_dim ** n_dims
-    #print('n_cells_per_dim',n_cells_per_dim)
     array_shape = np.ones(n_dims) * n_cells_per_dim
     array_shape = [int(v) for v in array_shape]
 
     grid = np.ndarray(shape=array_shape,buffer=np.ones(pow(n_cells_per_dim,n_dims)))
     grid *= -1
-    
-    # print('grid',grid)
-    # print('grid shape',grid.shape)
 
     saved_points = []
     saved_index = 0
@@ -26,9 +24,6 @@ def generateSamples(n_dims,r,k=30,verbose=False):
 
     spawn_points.append(np.ones(n_dims) * 0.5)
 
-    #neighbor_offsets = getNeighborOffsets(n_dims,verbose)
-    # if verbose:
-    #     print("neighbor offsets ready")
     candidatesChecked = 1
     while len(spawn_points) > 0:
         spawn_index = int(np.random.rand() * len(spawn_points))
@@ -36,8 +31,6 @@ def generateSamples(n_dims,r,k=30,verbose=False):
         candidateAccepted = False
         for i in range(k):
             offset = randomPoint(n_dims,r)
-            #print("k iteration",i)
-            #print("offset",i,offset)
             candidate = spawn_center + offset
             grid_pos = getGridPos(candidate,cell_side)
             if isValid(candidate,saved_points,grid,n_cells_per_dim,r,grid_pos,n_dims,verbose):
@@ -46,14 +39,9 @@ def generateSamples(n_dims,r,k=30,verbose=False):
                 grid[tuple(grid_pos)] = saved_index
                 saved_index += 1
                 candidateAccepted = True
-                #if verbose:
-                    #print("n saved points:",len(saved_points))
                 break
         if verbose:
-            #pct_filled_cells = len(saved_points)/total_cells
-            #pct_done = (2**n_dims) / pct_filled_cells
-            #pct_done = len(saved_points) / (2**n_dims)
-            print("candidates checked",candidatesChecked,"n saved points",len(saved_points))#,f"pct done ~ {pct_done:.2f}")
+            print("candidates checked",candidatesChecked,"n saved points",len(saved_points))
         candidatesChecked +=1
         if not candidateAccepted:
             del spawn_points[spawn_index]
@@ -62,14 +50,8 @@ def generateSamples(n_dims,r,k=30,verbose=False):
 
 def isValid(candidate,saved_points,grid,n_cells_per_dim,r,grid_pos,n_dims,verbose):
     if (candidate >= 0).all() and (candidate <= 1).all():
-        #grid_pos = getGridPos(candidate,cell_side)
-        #print("grid_pos",grid_pos)
-        #neighbor_offsets = getNeighborOffsets(n_dims)
         total_neighbors = 5 ** n_dims
         if total_neighbors < len(saved_points):
-            # total neighbor checks is less than checking one by one, so let's use neighbors
-            #if verbose:
-                #print("using neighbors")
             neighbor_offset = np.array([int(v) for v in np.ones(n_dims) * -2])
             while (neighbor_offset >= -2).all():
                 if verbose:
@@ -86,9 +68,6 @@ def isValid(candidate,saved_points,grid,n_cells_per_dim,r,grid_pos,n_dims,verbos
                 neighbor_offset = getNextNeighborOffset(neighbor_offset,n_dims)
             return True
         else:
-            # total neighbors would be bigger than just checking one by one, so let's just check one by one
-            #if verbose:
-                #print("not using neighbors, checking every other point")
             for other in saved_points:
                 if getDistSquared(other,candidate) < r*r:
                     return False
@@ -139,11 +118,7 @@ def randomPoint(n_dims,r):
     return (u / norm) * ((np.random.rand() * r) + r)
 
 def makeFile(n_dims,r,k,verbose):
-    # for n_dims in range(2,6):
-    #     for k in [30,20,10,5]:
     startTime = time.process_time()
-    #         diagonal = n_dims ** 0.5
-    #         r = diagonal / 10.0
     samples = generateSamples(n_dims,r,k,verbose)
     samples = np.array(samples)
 

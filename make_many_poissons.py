@@ -1,3 +1,5 @@
+# this little script is useful for rendering a bunch of sample sets at once by iterating different values of r and/or k
+
 import n_dims_poisson_sampling as p
 
 for k in [10,20,30]:
