@@ -8,6 +8,7 @@ import numpy as np
 import time
 import argparse
 import csv
+import os
 
 def generateSamples(n_dims,r,k=30,verbose=False):
     cell_side = r / math.sqrt(2)
@@ -123,6 +124,8 @@ def makeFile(n_dims,r,k,verbose):
     samples = np.array(samples)
 
     timestamp = time.strftime("%Y-%m-%d_%H-%M-%S")
+    if not os.path.isdir('generated_samples'):
+        os.mkdir('generated_samples')
     filePath = f'generated_samples/poisson_sample_set_ndims={n_dims}_npoints={len(samples)}_r={r:.2f}_k={k}_{timestamp}.csv'
     with open(filePath,"w") as csvfile:
         writer = csv.writer(csvfile)
