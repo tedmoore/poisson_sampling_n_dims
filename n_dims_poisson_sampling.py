@@ -138,10 +138,10 @@ def makeFile(n_dims,r,k,verbose):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("-k",action='store',dest='k',type=int,default=20)
-    parser.add_argument("-d",action='store',dest='n_dims',type=int,default=2)
-    parser.add_argument("-r",action='store',dest='r',type=float,default=0.1)
-    parser.add_argument("-v",action='store_true',dest='verbose',default=False)
+    parser.add_argument("-k",action='store',dest='k',type=int,default=20,help='Number of failures looking for a spot before giving up')
+    parser.add_argument("-d",action='store',dest='n_dims',type=int,default=2,help='Number of dimensions')
+    parser.add_argument("-r",action='store',dest='r',type=float,default=0.1,help='Minimum radius of closeness')
+    parser.add_argument("-v",action='store_true',dest='verbose',default=False,help='Verbose flag')
     args = parser.parse_args()
 
     makeFile(args.n_dims,args.r,args.k,args.verbose)
